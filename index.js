@@ -86,16 +86,16 @@ app.post("/api/auth/send-otp", validate(sendOtpSchema), async (req, res) => {
     await OTP.deleteMany({ email });
     await OTP.create({ email, phone, otp });
     
-    console.log(`🧪 DEV MODE -> Generated OTP for ${email}: ${otp}`);
+    console.log(`Generated OTP for ${email}: ${otp}`);
 
     // 🔥 Send the OTP directly back to the frontend
     res.json({ 
-      message: "OTP generated successfully ✅", 
+      message: "OTP generated successfully ", 
       devModeOtp: otp 
     });
     
   } catch (err) {
-    console.error("\n❌ SERVER CRASH:", err);
+    console.error("\n SERVER CRASH:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -114,7 +114,7 @@ app.post("/api/auth/verify-otp", validate(verifyOtpSchema), async (req, res) => 
     const record = await OTP.findOne({ email: email, otp: otp });
     
     if (!record) {
-      console.log("2. RESULT -> MATCH FAILED ❌\n");
+      console.log("2. RESULT -> MATCH FAILED \n");
       return res.status(400).json({ error: "Invalid or Expired OTP" });
     }
 
@@ -122,7 +122,7 @@ app.post("/api/auth/verify-otp", validate(verifyOtpSchema), async (req, res) => 
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET || "secret", { expiresIn: "1h" });
     
-    console.log("2. RESULT -> MATCH SUCCESS ✅\n");
+    console.log("2. RESULT -> MATCH SUCCESS \n");
     res.json({ token, message: "Verification successful" });
   } catch (err) {
     console.error(err);
